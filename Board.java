@@ -39,13 +39,13 @@ public class Board {
             return false;
         for (int i = 0; i < dimension(); i++)
             for (int j = 0; j < dimension(); j++)
-            if (board[i][j] != fieldValue(i, j))
-                return false;
+                if (board[i][j] != fieldValue(i, j))
+                    return false;
         return true;
     }
 
     public Board twin() { // a board that is obtained by exchanging any pair of blocks
-        int[][] twin = null;
+        int[][] twin;
         int row = StdRandom.uniform(dimension() - 1);
         int col = StdRandom.uniform(dimension() - 1);
 
@@ -53,13 +53,16 @@ public class Board {
             twin = swap(row, col, row, col + 1);
         else if (board[row][col] == 0)
             twin = swap(row + 1, col + 1, row, col + 1);
-        else if (board[row][col + 1] == 0)
+        else
             twin = swap(row, col, row + 1, col);
+
+        if (twin == null)
+            throw new NullPointerException();
         return new Board(twin);
     }
 
     public boolean equals(Object y) { // does this board equal y?
-        if (y == null || !(y instanceof Board))
+        if (y == null || !(y.getClass() == this.getClass()))
             return false;
         if (this == y)
             return true;
@@ -107,21 +110,6 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        int[][] blocks = new int[3][3];
-
-        blocks[0][0] = 2; blocks[0][1] = 1; blocks[0][2] = 3;
-        blocks[1][0] = 4; blocks[1][1] = 0; blocks[1][2] = 5;
-        blocks[2][0] = 7; blocks[2][1] = 8; blocks[2][2] = 6;
-        Board b = new Board(blocks);
-        System.out.println("hamming: " + b.hamming());
-        System.out.println("manhattan: " + b.manhattan());
-
-
-        System.out.print(b);
-        Board x = new Board(b.copy(b.board));
-
-        for (Board neighbor : b.neighbors())
-            System.out.print(neighbor);
     }
 
 

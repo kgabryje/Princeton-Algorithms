@@ -45,7 +45,9 @@ public class Solver {
     }
 
     public int moves() { // min number of moves to solve initial board; -1 if unsolvable
-        return isSolvable() ? lastNode.moves : -1;
+        if (!isSolvable())
+            return -1;
+        return lastNode.moves;
     }
 
     public Iterable<Board> solution() { // sequence of boards in a shortest solution; null if unsolvable
