@@ -27,6 +27,8 @@ public class Solver {
     private SearchNode lastNode;
 
     public Solver(Board initial) { // find a solution to the initial board (using the A* algorithm)
+        if (initial == null)
+            throw new NullPointerException();
         MinPQ<SearchNode> nodes = new MinPQ<>();
         MinPQ<SearchNode> twinNodes = new MinPQ<>();
 
@@ -51,6 +53,8 @@ public class Solver {
     }
 
     public Iterable<Board> solution() { // sequence of boards in a shortest solution; null if unsolvable
+        if (!isSolvable())
+            return null;
         Stack<Board> moves = new Stack<>();
         SearchNode node = lastNode;
 
@@ -71,7 +75,6 @@ public class Solver {
             for (int j = 0; j < n; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-
         // solve the puzzle
         Solver solver = new Solver(initial);
 

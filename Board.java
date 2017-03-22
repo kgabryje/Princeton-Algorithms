@@ -17,8 +17,8 @@ public class Board {
         int outOfPlace = 0;
         for (int i = 0; i < dimension(); i++) {
             for (int j = 0; j < dimension(); j++) {
-                if (board[i][j] == 0 && (i != dimension() - 1 || j != dimension() -1))
-                    outOfPlace++;
+                if (board[i][j] == 0)
+                    continue;
                 else if (board[i][j] != fieldValue(i, j))
                     outOfPlace++;
             }
@@ -115,6 +115,8 @@ public class Board {
 
     private int getDistance(int row, int column) {
         int val = board[row][column];
+        if (val == 0)
+            return 0;
         return Math.abs(row - destRow(val)) + Math.abs(column - destColumn(val));
     }
 
