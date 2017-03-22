@@ -75,6 +75,7 @@ public class Board {
 
         return true;
     }
+
     public Iterable<Board> neighbors() { // all neighboring boards
         LinkedList<Board> neighbors = new LinkedList<>();
         int[] location = findZero();
@@ -130,6 +131,8 @@ public class Board {
     }
 
     private int fieldValue(int row, int column) {
+        if (row * dimension() + column + 1 == dimension()*dimension())
+            return 0;
         return row * dimension() + column + 1;
     }
 
