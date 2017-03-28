@@ -102,10 +102,10 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
-        Point p1 = new Point(1,1);
-        Point p2 = new Point(3,3);
-        Point p3 = new Point(1,5);
-        System.out.print(p1.slopeOrder().compare(p2,p3));
+        Point p1 = new Point(1, 1);
+        Point p2 = new Point(3, 3);
+        Point p3 = new Point(1, 5);
+        System.out.print(p1.slopeOrder().compare(p2, p3));
     }
 
     private class SlopeOrder implements Comparator<Point> {

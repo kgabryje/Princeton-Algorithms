@@ -1,33 +1,56 @@
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdDraw;
 
-public class BruteCollinearPoints {
+public class FastCollinearPoints {
     private List<LineSegment> lineSegments = new ArrayList<>();
 
-    public BruteCollinearPoints(Point[] points) {
+    public FastCollinearPoints(Point[] points) {
         checkForDuplicates(points);
         checkForNulls(points);
+
         Arrays.sort(points);
-        double slope;
-        for (int i = 0; i < points.length - 3; i++) {
-            for (int j = i + 1; j < points.length - 2; j++) {
-                slope = points[i].slopeTo(points[j]);
-                for (int k = j + 1; k < points.length - 1; k++) {
-                    if (points[i].slopeTo(points[k]) == slope) {
-                        for (int m = k + 1; m < points.length; m++) {
-                            if (points[i].slopeTo(points[m]) == slope) {
-                                lineSegments.add(new LineSegment(points[i], points[m]));
-                            }
-                        }
+        Point[] copy = new Point[points.length];
+
+        for (int i = 0; i < points.length - 1; i++) {
+            Point pivot = points[i];
+            System.arraycopy(points, 0, copy, 0, points.length);
+            Arrays.sort(copy, pivot.slopeOrder());
+
+            LinkedList<Point> collinear = new LinkedList<>();
+            collinear.add(pivot);
+            collinear.add(copy[1]);
+            double slope = pivot.slopeTo(copy[1]);
+            for (int j = 2; j < copy.length; j++) {
+                if (pivot.slopeTo(copy[j]) == slope) {
+                    collinear.add(copy[j]);
+                }
+                else {
+                    if (collinear.size() >= 3) {
+                        Collections.sort(collinear);
+                        if (collinear.getFirst() == pivot)
+                            lineSegments.add(new LineSegment(pivot, collinear.get(collinear.size() - 1)));
                     }
+                    collinear.clear();
+                    collinear.add(pivot);
+                    collinear.add(copy[j]);
+                    slope = pivot.slopeTo(copy[j]);
                 }
             }
+            if (collinear.size() >= 3) {
+                Collections.sort(collinear);
+                if (collinear.getFirst() == pivot)
+                    lineSegments.add(new LineSegment(pivot, collinear.get(collinear.size() - 1)));
+            }
+            collinear.clear();
         }
-    }   // finds all line segments containing 4 points
+    }    // finds all line segments containing 4 or more points
 
     public int numberOfSegments() {
         return lineSegments.size();
@@ -35,10 +58,9 @@ public class BruteCollinearPoints {
 
     public LineSegment[] segments() {
         return lineSegments.toArray(new LineSegment[lineSegments.size()]);
-    }                // the line segments
+    } // the line segments
 
     public static void main(String[] args) {
-
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
@@ -59,7 +81,7 @@ public class BruteCollinearPoints {
         StdDraw.show();
 
         // print and draw the line segments
-        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
