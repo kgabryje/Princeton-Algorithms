@@ -19,7 +19,8 @@ public class PointSET {
     public void insert(Point2D p) { // add the point to the set (if it is not already in the set)
         if (p == null)
             throw new NullPointerException();
-        set.add(p);
+        if (!contains(p))
+            set.add(p);
     }
 
     public boolean contains(Point2D p) { // does the set contain point p?
@@ -46,6 +47,8 @@ public class PointSET {
     public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
         if (p == null)
             throw new NullPointerException();
+        if (isEmpty())
+            return null;
         double minDistance = Double.POSITIVE_INFINITY;
         Point2D minPoint = null;
         for (Point2D pp : set) {
@@ -60,12 +63,16 @@ public class PointSET {
     public static void main(String[] args) { // unit testing of the methods (optional)
         PointSET set = new PointSET();
         RectHV rect = new RectHV(0.5, 0.0, 2.5, 3.0);
-        Point2D points[] = new Point2D[5];
-        points[0] = new Point2D(1, 1); points[1] = new Point2D(2, 5); points[2] = new Point2D(3, 2);
-        points[3] = new Point2D(5, 2); points[4] = new Point2D(2, 2);
+        Point2D[] points = new Point2D[5];
+        points[0] = new Point2D(1, 1);
+        points[1] = new Point2D(2, 5);
+        points[2] = new Point2D(3, 2);
+        points[3] = new Point2D(5, 2);
+        points[4] = new Point2D(2, 2);
         for (Point2D p : points)
             set.insert(p);
-        Point2D near = set.nearest(new Point2D(2, 3));
+        set.nearest(new Point2D(2, 3));
         set.range(rect);
+        set.draw();
     }
 }
