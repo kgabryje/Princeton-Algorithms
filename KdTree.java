@@ -20,20 +20,20 @@ public class KdTree {
     private Node root;
     private int size;
 
-    public KdTree() { // construct an empty set of points
+    public KdTree() {
         root = null;
         size = 0;
     }
 
-    public boolean isEmpty() { // is the set empty?
+    public boolean isEmpty() {
         return size == 0;
     }
 
-    public int size() { // number of points in the set
+    public int size() {
         return size;
     }
 
-    public void insert(Point2D p) { // add the point to the set (if it is not already in the set)
+    public void insert(Point2D p) {
         if (p == null)
             throw new NullPointerException();
         if (root == null) {
@@ -44,18 +44,18 @@ public class KdTree {
         root = insert(root, p, root.rect, true);
     }
 
-    public boolean contains(Point2D p) { // does the set contain point p?
+    public boolean contains(Point2D p) {
         if (p == null)
             throw new NullPointerException();
         return contains(root, p, true);
     }
 
-    public void draw() { // draw all points to standard draw
+    public void draw() {
         StdDraw.clear();
         draw(root, true);
     }
 
-    public Iterable<Point2D> range(RectHV rect) { // all points that are inside the rectangle
+    public Iterable<Point2D> range(RectHV rect) {
         if (rect == null)
             throw new NullPointerException();
         Queue<Point2D> q = new Queue<>();
@@ -63,7 +63,7 @@ public class KdTree {
         return q;
     }
 
-    public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
+    public Point2D nearest(Point2D p) {
         if (p == null)
             throw new NullPointerException();
         if (isEmpty())
@@ -71,20 +71,7 @@ public class KdTree {
         return nearest(root, p, root.key);
     }
 
-    public static void main(String[] args) { // unit testing of the methods (optional)
-        KdTree kd = new KdTree();
-        RectHV rect = new RectHV(0.5, 0.0, 2.5, 3.0);
-        Point2D[] points = new Point2D[5];
-        points[0] = new Point2D(3, 2);
-        points[1] = new Point2D(2, 5);
-        points[2] = new Point2D(1, 1);
-        points[3] = new Point2D(5, 2);
-        points[4] = new Point2D(2, 2);
-        for (Point2D p : points)
-            kd.insert(p);
-        kd.nearest(new Point2D(2, 3));
-        kd.range(rect);
-        kd.draw();
+    public static void main(String[] args) {
     }
 
     private Node insert(Node node, Point2D p, RectHV rect, boolean isVertical) {
@@ -103,7 +90,7 @@ public class KdTree {
                 nextRect = new RectHV(node.rect.xmin(), node.rect.ymin(), node.key.x(), node.rect.ymax());
             else if (cmp < 0 && node.left != null)
                 nextRect = node.left.rect;
-            else if (cmp > 0 && node.right == null)
+            else if (node.right == null)
                 nextRect = new RectHV(node.key.x(), node.rect.ymin(), node.rect.xmax(), node.rect.ymax());
             else
                 nextRect = node.right.rect;
@@ -114,7 +101,7 @@ public class KdTree {
                 nextRect = new RectHV(node.rect.xmin(), node.rect.ymin(), node.rect.xmax(), node.key.y());
             else if (cmp < 0 && node.left != null)
                 nextRect = node.left.rect;
-            else if (cmp > 0 && node.right == null)
+            else if (node.right == null)
                 nextRect = new RectHV(node.rect.xmin(), node.key.y(), node.rect.xmax(), node.rect.ymax());
             else
                 nextRect = node.right.rect;
@@ -159,14 +146,11 @@ public class KdTree {
                 min = node.key;
             }
 
-            // If the current min point is closer to query than the current point
-            if (min.distanceSquaredTo(p)
-                    >= node.rect.distanceSquaredTo(p)) {
+            if (min.distanceSquaredTo(p) >= node.rect.distanceSquaredTo(p)) {
                 if (node.key.distanceSquaredTo(p) < min.distanceSquaredTo(p)) {
                     min = node.key;
                 }
 
-                // Check in which order should we iterate
                 if (node.right != null && node.right.rect.contains(p)) {
                     min = nearest(node.right, p, min);
                     min = nearest(node.left, p, min);
