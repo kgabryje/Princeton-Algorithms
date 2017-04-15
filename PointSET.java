@@ -46,9 +46,26 @@ public class PointSET {
     public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
         if (p == null)
             throw new NullPointerException();
-        return p.distanceTo(set.ceiling(p)) < p.distanceTo(set.floor(p)) ? set.ceiling(p) : set.floor(p);
+        double minDistance = Double.POSITIVE_INFINITY;
+        Point2D minPoint = null;
+        for (Point2D pp : set) {
+            if (p.distanceTo(pp) < minDistance) {
+                minDistance = p.distanceTo(pp);
+                minPoint = pp;
+            }
+        }
+        return minPoint;
     }
 
-    public static void main(String[] args) {// unit testing of the methods (optional)
+    public static void main(String[] args) { // unit testing of the methods (optional)
+        PointSET set = new PointSET();
+        RectHV rect = new RectHV(0.5, 0.0, 2.5, 3.0);
+        Point2D points[] = new Point2D[5];
+        points[0] = new Point2D(1, 1); points[1] = new Point2D(2, 5); points[2] = new Point2D(3, 2);
+        points[3] = new Point2D(5, 2); points[4] = new Point2D(2, 2);
+        for (Point2D p : points)
+            set.insert(p);
+        Point2D near = set.nearest(new Point2D(2, 3));
+        set.range(rect);
     }
 }
